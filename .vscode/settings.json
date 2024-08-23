@@ -11,10 +11,5 @@
   "editor.renderWhitespace": "selection",
   "editor.wordWrap": "on",
   "editor.insertSpaces": false,
-  "editor.autoClosingOvertype": "always",
-  "stylelint.enable": true,
-  "stylelint.validate": ["css", "scss", "less"],
-  "css.validate": false,
-  "scss.validate": false,
-  "less.validate": false
+  "editor.autoClosingOvertype": "always"
 }

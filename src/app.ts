@@ -1,97 +1,74 @@
-import express from 'express';
+// src/server.ts
 import cookieParser from 'cookie-parser';
+import debug from 'debug';
+import express from 'express';
+import http from 'http';
 import logger from 'morgan';
 import appRoutes from './app/routes';
-import { notFoundHandler } from './middleware/notFoundHandler';
 import { errorHandler } from './middleware/errorHandler';
-import http from 'http';
-const debug = require('debug')('expresssolid:server');
+import { notFoundHandler } from './middleware/notFoundHandler';
 
+const debugInstance = debug('expresssolid:server');
 const app = express();
 
+// Middleware setup
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Application routes
 appRoutes(app);
 
-// catch 404 and forward to error handler
+// Error handling middleware
 app.use(notFoundHandler);
-
-// error handler
 app.use(errorHandler);
 
-/**
- * Get port from environment and store in Express.
- */
+// Port and server setup
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
 const server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.on('error', error => onError(error, port));
+server.on('listening', () => onListening(server, debugInstance));
 
 export default app;
 
-/**
- * Normalize a port into a number, string, or false.
- */
-function normalizePort(val: string) {
-    const port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
+function normalizePort(val: string): number | string {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val; // named pipe
+  if (port >= 0) return port; // port number
+  throw new Error('Invalid port');
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-function onError(error: NodeJS.ErrnoException) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
+function onError(error: NodeJS.ErrnoException, port: number | string): void {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
 
-    const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-        case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-        default:
-            throw error;
-    }
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+    default:
+      throw error;
+  }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-function onListening() {
-    const addr = server.address();
-    if (!addr) throw new Error('Server address is not defined');
+function onListening(
+  server: http.Server,
+  debugInstance: debug.IDebugger,
+): void {
+  const addr = server.address();
+  if (!addr) throw new Error('Server address is not defined');
 
-    const bind =
-        typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debugInstance('Listening on ' + bind);
 }
