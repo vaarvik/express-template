@@ -1,0 +1,63 @@
+{
+  "name": "expresssolid",
+  "version": "0.0.0",
+  "private": true,
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "build": "npm run lint && next build",
+    "check-types": "tsc --pretty",
+    "check-types:watch": "tsc --pretty --watch",
+    "dev": "npm-run-all --parallel start:dev check-types:watch",
+    "format": "prettier --check --ignore-path .gitignore .",
+    "format:fix": "prettier --write --ignore-path .gitignore .",
+    "husky:check": "bash .husky/pre-commit",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint",
+    "lint:js:fix": "eslint --fix",
+    "lint:staged": "lint-staged",
+    "prepare": "husky",
+    "start": "node ./dist/app.js",
+    "start:dev": "nodemon ./dist/app.js",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "tsm:watch": "typed-scss-modules app/**/*.module.scss --watch --ignoreInitial"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
+    "@types/http-errors": "^2.0.4",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.5.0",
+    "eslint": "^9.9.1",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
+    "nodemon": "^3.1.4",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
+}
