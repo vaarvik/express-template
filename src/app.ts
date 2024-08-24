@@ -4,11 +4,11 @@ import debug from 'debug';
 import express from 'express';
 import http from 'http';
 import logger from 'morgan';
-import appRoutes from './app/routes';
+import { normalizePort } from './core/helpers';
+import { onError, onListening } from './core/listeners';
+import appRoutes from './core/routes';
 import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
-import { normalizePort } from './server/helpers';
-import { onError, onListening } from './server/listeners';
 
 const debugInstance = debug('expresssolid:server');
 const app = express();

@@ -2,6 +2,7 @@ import { fixupConfigRules } from '@eslint/compat';
 import { FlatCompat } from '@eslint/eslintrc';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import typescriptEslintGenerics from 'eslint-plugin-require-explicit-generics';
 
 const flatCompat = new FlatCompat();
 
@@ -36,15 +37,22 @@ const settings = [
       '@typescript-eslint/no-unsafe-function-type': 'error',
       '@typescript-eslint/no-var-requires': 'warn',
       '@typescript-eslint/no-wrapper-object-types': 'error',
+      '@typescript-eslint/consistent-generic-constructors': 'error',
       'max-depth': ['warn', 3],
       'max-lines': ['warn', 150],
       'no-case-declarations': 'error',
       'no-empty': 'off',
       'no-unneeded-ternary': 'error',
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'require-explicit-generics/require-explicit-generics': [
+        'error',
+        // List your functions here
+        ['createWebSocketClient'],
+      ],
     },
     plugins: {
       '@typescript-eslint': typescriptEslint,
+      'require-explicit-generics': typescriptEslintGenerics,
     },
     languageOptions: {
       parser: tsParser,
